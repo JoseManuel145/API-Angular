@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AccessoryService as AccessoryService } from '../../services/accessory-service.service';
+import { AccessoryService } from '../../services/accessory-service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'form-accessory',
@@ -24,11 +25,14 @@ export class FormAccessoryComponent {
       console.log('Formulario enviado:', this.accessoryForm.value);
       this.accessoryService.postAccessory(this.accessoryForm.value.name, this.accessoryForm.value.description).subscribe(response => {
         console.log('Accesorio creado:', response);
+        Swal.fire('Creado', 'Accesorio creado con éxito', 'success');
       }, error => {
         console.error('Error al crear el accesorio:', error);
+        Swal.fire('Error', 'Error al crear el accesorio: ' + error.message, 'error');
       });
     } else {
       console.log('Formulario inválido');
+      Swal.fire('Formulario inválido', 'Por favor, complete todos los campos correctamente', 'error');
     }
   }
 }

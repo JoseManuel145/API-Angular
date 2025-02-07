@@ -4,6 +4,8 @@ import { Pet } from '../../models/pet';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { FormPetComponent } from '../../components/form-pet/form-pet.component';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-pet',
   standalone: true,
@@ -18,7 +20,7 @@ import { FormPetComponent } from '../../components/form-pet/form-pet.component';
 export class PetComponent implements OnInit {
   dataSource: Pet[] = [];
 
-  constructor(private petService: PetService) {}
+  constructor(private petService: PetService) { }
 
   ngOnInit(): void {
     this.getData();
@@ -29,9 +31,9 @@ export class PetComponent implements OnInit {
       next: (pets: any) => {
         if (Array.isArray(pets)) {
           this.dataSource = pets;
-        } else if(pets === null) {
+        } else if (pets === null) {
           console.error('Error: No hay mascotas');
-        }else{
+        } else {
           console.error('Error: la respuesta no es un array');
           this.dataSource = [];
         }
@@ -43,16 +45,24 @@ export class PetComponent implements OnInit {
   }
 
   onSubmit(pet_Id: number): void {
-    if (confirm('¿Estás seguro de eliminar esta mascota?')) {
-      this.petService.deletePet(pet_Id).subscribe({
-        next: () => {
-          console.log('Mascota eliminada con éxito');
-          this.getData();
-        },
-        error: (error) => {
-          console.error('Error al eliminar la mascota:', error);
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro de eliminar esta mascota?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.petService.deletePet(pet_Id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Mascota eliminada con éxito', 'success');
+            this.getData();
+          },
+          error: (error) => {
+            Swal.fire('Error', 'Error al eliminar la mascota: ' + error.message, 'error');
+          }
+        });
+      }
+    });
   }
 }

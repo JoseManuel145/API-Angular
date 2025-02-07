@@ -4,6 +4,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { FormAccessoryComponent } from '../../components/form-accessory/form-accessory.component';
 import { AccessoryService } from '../../services/accessory-service.service';
 import { Accessory } from '../../models/accessory';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-accessory',
@@ -39,16 +40,24 @@ export class AccessoryComponent implements OnInit {
   }
 
   onSubmit(accessory_Id: number): void {
-    if (confirm('¿Estás seguro de eliminar este accesorio?')) {
-      this.accessoryService.deleteProduct(accessory_Id).subscribe({
-        next: () => {
-          console.log('Accesorio eliminado con éxito');
-          this.getData();
-        },
-        error: (error) => {
-          console.error('Error al eliminar el accesorio:', error);
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro de eliminar este accesorio?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.accessoryService.deleteProduct(accessory_Id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Accesorio eliminado con éxito', 'success');
+            this.getData();
+          },
+          error: (error) => {
+            Swal.fire('Error', 'Error al eliminar el accesorio: ' + error.message, 'error');
+          }
+        });
+      }
+    });
   }
 }
