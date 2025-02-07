@@ -1,0 +1,37 @@
+<form [formGroup]="petForm" (ngSubmit)="onSubmit()" class="accessory-form">
+    <div class="form-group">
+        <label for="name">Nombre del accesorio:</label>
+        <input type="text" id="name" formControlName="name" placeholder="Ej: Max" />
+        @if (petForm.get('name')?.invalid && petForm.get('name')?.touched) {
+        <div class="error-message">
+            @if (petForm.get('name')?.errors?.['required']) {
+            <span>El nombre es requerido.</span>
+            }
+            @if (petForm.get('name')?.errors?.['minlength']) {
+            <span>El nombre debe tener al menos 3
+                caracteres.</span>
+            }
+        </div>
+        }
+
+    </div>
+
+    <div class="form-group">
+        <label for="raza">Descripción:</label>
+        <textarea id="raza" formControlName="raza" placeholder="Ej: Chihuahua."></textarea>
+
+        @if (petForm.get('raza')?.invalid && petForm.get('raza')?.touched) {
+        <div class="error-message">
+            @if (petForm.get('raza')?.errors?.['required']) {
+            <span>La descripción es requerida.</span>
+            }
+
+            @if (petForm.get('raza')?.errors?.['minlength']) {
+            <span>La raza debe tener al menos 3 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <button type="submit" [disabled]="petForm.invalid" class="submit-button">Guardar</button>
+</form>

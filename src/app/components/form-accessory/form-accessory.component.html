@@ -1,0 +1,38 @@
+<form [formGroup]="accessoryForm" (ngSubmit)="onSubmit()" class="accessory-form">
+    <div class="form-group">
+        <label for="name">Nombre del accesorio:</label>
+        <input type="text" id="name" formControlName="name" placeholder="Ej: Collar para perro" />
+        @if (accessoryForm.get('name')?.invalid && accessoryForm.get('name')?.touched) {
+        <div class="error-message">
+            @if (accessoryForm.get('name')?.errors?.['required']) {
+            <span>El nombre es requerido.</span>
+            }
+            @if (accessoryForm.get('name')?.errors?.['minlength']) {
+            <span>El nombre debe tener al menos 3
+                caracteres.</span>
+            }
+        </div>
+        }
+
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descripción:</label>
+        <textarea id="description" formControlName="description"
+            placeholder="Ej: Collar ajustable para perros de todos los tamaños."></textarea>
+
+        @if (accessoryForm.get('description')?.invalid && accessoryForm.get('description')?.touched) {
+        <div class="error-message">
+            @if (accessoryForm.get('description')?.errors?.['required']) {
+            <span>La descripción es requerida.</span>
+            }
+
+            @if (accessoryForm.get('description')?.errors?.['minlength']) {
+            <span>La descripción debe tener al menos 10 caracteres.</span>
+            }
+        </div>
+        }
+    </div>
+
+    <button type="submit" [disabled]="accessoryForm.invalid" class="submit-button">Guardar</button>
+</form>
